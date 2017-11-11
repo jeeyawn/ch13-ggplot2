@@ -1,8 +1,12 @@
 # Data Prep
 
+View(county.data)
+View(all.data)
+
 # LOAD DATA: read in the `wa-county-data.csv` and `wa-voter-turnout.csv` files
 raw.county.data <- read.csv('./data/wa-county-data.csv', stringsAsFactors = FALSE)
 raw.voter.data <- read.csv('./data/wa-voter-turnout.csv', stringsAsFactors = FALSE)
+colnames(raw.county.data)[1] <- 'county.name'
 
 # DATA WRANGLING: clean and join the data frames
 
@@ -32,3 +36,4 @@ colnames(voter.data) <- tolower(colnames(raw.voter.data))
 # Join the data frames together, set as numeric
 all.data <- left_join(county.data, voter.data, by='county') 
 all.data[,2:ncol(all.data)] <- sapply(all.data[,2:ncol(all.data)], as.numeric)
+

@@ -1,25 +1,29 @@
 # Exercise 3: Mapping with ggplot2
+rm(list=ls())
 
 # Install and load `ggplot2` and `dplyr`
 library("ggplot2")
 library("dplyr")
+install.packages('maps')
+library("maps")
+setwd('C:/Users/jiony/ch13-ggplot2/exercise-3')
 
 # Read in the election data file (.csv)
 # BE SURE TO SET YOUR WORKING DIRECTORY!
 election <- read.csv('data/2016_US_County_Level_Presidential_Results.csv', stringsAsFactors = FALSE)
 
 # Inspect the `election` data frame to understand the data you're working with
-
+View(election)
 
 # Consider: what column contains state names? What column contains county names?
 # What format are those county names in?
 
 
 # Use `map_data()` to load the `county` map of the US, storing it in a variable
-
+map.county <- map_data('county', region = ".")
 
 # Inspect this data frame to understand what data yu're working with
-
+View(map.county)
 
 # Consider: what column contains state names? What column contains county names?
 # What format are those county names in?
@@ -33,16 +37,23 @@ election <- read.csv('data/2016_US_County_Level_Presidential_Results.csv', strin
 # available from the `maps` library (which you should install and load)
 
 # Use `data()` to load the `"county.fips"` data frame into the environment (does not return anything)
-
+data(county.fips, envir = .GlobalEnv)
 
 # Inspect the `county.fips` data frame to see what you got
-
+View(county.fips)
 
 # Use a `join` operation to add the `fips` column to your `counties` data frame.
 # Note that you may need to use `paste0()` and `mutate() to make a column of "state,county"
 # to join by!
 # Note: don't worry about Alaska for this exercise.
+map.county <- map.county %>% 
+  mutate('state,county' = paste0(region, ',', subregion))
 
+colnames(county.fips)[2] <- 'state,county'
+
+counties <- left_join(map.county, county.fips, by = 'state,county')
+
+View(counties)
 
 # Now you can join the `counties` map data (with fips!) to the `election` data
 # Hint: use `by = c("fips" = "combined_fips")` to specify the column to join by
